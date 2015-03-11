@@ -49,3 +49,38 @@ VALUES ('San Francisco', 43, 57, 0.0, '1994-11-29');
 INSERT INTO weather (date, city, temp_hi, temp_lo)
 VALUES ('1994-11-29', 'Hayward', 54, 37);
 
+-- Retrieve all rows from WEATHER table with *
+SELECT * FROM weather;
+
+-- Retrieve all rows from WEATHER table without *
+SELECT city, temp_lo, temp_hi, prcp, date
+FROM weather;
+
+-- Retrieve average temperature from WEATHER table using expressionss
+SELECT city, (temp_hi + temp_lo) / 2 AS temp_avg, date
+FROM weather;
+
+-- Retrieve rows where it was raining in San Francisco
+SELECT *
+FROM weather
+WHERE city = 'San Francisco' AND prcp > 0.0;
+
+-- Retrieve all rows from WEATHER table ordered by city
+SELECT *
+FROM weather
+ORDER BY city;
+
+-- Retrieve all rows from WEATHER table ordered by city, then lowest temperature
+SELECT *
+FROM weather
+ORDER BY city, temp_lo;
+
+-- Retrieve all cities from WEATHER table, each only once
+SELECT DISTINCT city
+FROM weather;
+
+-- Retrieve all cities from WEATHER table, each only once, ordered by city
+SELECT DISTINCT city
+FROM weather
+ORDER BY city;
+
