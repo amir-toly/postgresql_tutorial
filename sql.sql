@@ -84,3 +84,48 @@ SELECT DISTINCT city
 FROM weather
 ORDER BY city;
 
+-- List all weather records along with associated city location
+SELECT *
+FROM weather, cities
+WHERE city = name;
+
+-- Display city's name only once
+SELECT city, temp_lo, temp_hi, prcp, date, location
+FROM weather, cities
+WHERE city = name;
+
+-- Question: Attempt to determine the semantics of the query when the WHERE clause is omitted.
+INSERT INTO cities VALUES ('Test', '(42, 69)'); -- Add another city to get a better idea of what is happening
+SELECT * FROM weather, cities; -- Check the result
+-- Answer: We obtain the product of each row from WEATHER table with each rows from CITIES table.
+
+-- Qualify column names
+SELECT weather.city, weather.temp_lo, weather.temp_hi, weather.prcp, weather.date, cities.location
+FROM weather, cities
+WHERE cities.name = weather.city;
+
+-- Make an INNER JOIN
+SELECT *
+FROM weather INNER JOIN cities ON (weather.city = cities.name);
+
+-- Make a LEFT OUTER JOIN
+SELECT *
+FROM weather LEFT OUTER JOIN cities ON (weather.city = cities.name);
+
+-- Question: There are also right outer joins and full outer joins. Try to find out what those do.
+SELECT * FROM weather RIGHT OUTER JOIN cities ON (weather.city = cities.name);
+SELECT * FROM weather FULL OUTER JOIN cities ON (weather.city = cities.name);
+-- Answers:
+-- Right outer join does the same as left outer join, but with the table mentioned on the right of the join operator.
+-- Full outer join does both at the same time, replacing unmatched rows from both tables by blank ones.
+
+-- Self join on WEATHER table
+SELECT W1.city, W1.temp_lo AS low, W1.temp_hi AS high, W2.city, W2.temp_lo AS low, W2.temp_hi AS high
+FROM weather W1, weather W2
+WHERE W1.temp_lo < W2.temp_lo AND W1.temp_hi > W2.temp_hi;
+
+-- List all weather records along with associated city location, using short aliases
+SELECT *
+FROM weather w, cities c
+WHERE w.city = c.name;
+
