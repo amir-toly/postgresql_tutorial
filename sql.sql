@@ -157,3 +157,11 @@ WHERE city LIKE 'S%'
 GROUP BY city
 HAVING max(temp_lo) < 40;
 
+-- Subtract 2 degrees from temperatures after November 28
+UPDATE weather
+SET temp_hi = temp_hi - 2, temp_lo = temp_lo - 2
+WHERE date > '1994-11-28';
+
+-- Look at the new state of the data
+SELECT * FROM weather;
+
