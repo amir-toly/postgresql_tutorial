@@ -129,3 +129,31 @@ SELECT *
 FROM weather w, cities c
 WHERE w.city = c.name;
 
+-- Select the highest low-temperature from WEATHER table
+SELECT max(temp_lo) FROM weather;
+
+-- (Try to) Select the highest low-temperature from WEATHER table along with the corresponding cities, misplacing the aggregate function
+SELECT city FROM weather WHERE temp_lo = max(temp_lo);
+
+-- Select the highest low-temperature from WEATHER table along with the corresponding cities, the right way: using a subquery
+SELECT city FROM weather
+WHERE temp_lo = (SELECT max(temp_lo) FROM weather);
+
+-- Select the highest low-temperature observed in each city
+SELECT city, max(temp_lo)
+FROM weather
+GROUP BY city;
+
+-- Filter results using HAVING clause
+SELECT city, max(temp_lo)
+FROM weather
+GROUP BY city
+HAVING max(temp_lo) < 40;
+
+-- Add a where clause to filter by city name
+SELECT city, max(temp_lo)
+FROM weather
+WHERE city LIKE 'S%'
+GROUP BY city
+HAVING max(temp_lo) < 40;
+
