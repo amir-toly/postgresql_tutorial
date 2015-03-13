@@ -165,3 +165,22 @@ WHERE date > '1994-11-28';
 -- Look at the new state of the data
 SELECT * FROM weather;
 
+-- Delete Hayward city records
+DELETE FROM weather WHERE city = 'Hayward';
+
+-- Look at the new state of the data
+SELECT * FROM weather;
+
+-- Delete all rows from WEATHER table
+DELETE FROM weather;
+
+-- Check the data again
+SELECT * FROM weather;
+
+-- Populate it back for coming exercises
+INSERT INTO weather VALUES ('San Francisco', 46, 50, 0.25, '1994-11-27');
+INSERT INTO weather(city, temp_lo, temp_hi, prcp, date)
+VALUES ('San Francisco', 43, 57, 0.0, '1994-11-29');
+INSERT INTO weather (date, city, temp_hi, temp_lo)
+VALUES ('1994-11-29', 'Hayward', 54, 37);
+
