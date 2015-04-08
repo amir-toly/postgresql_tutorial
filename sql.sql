@@ -9,16 +9,16 @@ SELECT 2 + 2;
 
 -- Create WEATHER table
 CREATE TABLE weather (
-  city    varchar(80),
-  temp_lo int,          -- low temperature
-  temp_hi int,          -- high temperature
-  prcp    real,         -- precipitation
+  city    varchar(80) references cities(city),
+  temp_lo int,                                  -- low temperature
+  temp_hi int,                                  -- high temperature
+  prcp    real,                                 -- precipitation
   date    date
 );
 
 -- Create CITIES table
 CREATE TABLE cities (
-  name      varchar(80),
+  city      varchar(80) primary key,
   location  point
 );
 
@@ -171,19 +171,6 @@ DELETE FROM weather WHERE city = 'Hayward';
 -- Look at the new state of the data
 SELECT * FROM weather;
 
--- Delete all rows from WEATHER table
-DELETE FROM weather;
-
--- Check the data again
-SELECT * FROM weather;
-
--- Populate it back for coming exercises
-INSERT INTO weather VALUES ('San Francisco', 46, 50, 0.25, '1994-11-27');
-INSERT INTO weather(city, temp_lo, temp_hi, prcp, date)
-VALUES ('San Francisco', 43, 57, 0.0, '1994-11-29');
-INSERT INTO weather (date, city, temp_hi, temp_lo)
-VALUES ('1994-11-29', 'Hayward', 54, 37);
-
 -- Define a view
 CREATE VIEW myview AS
 SELECT city, temp_lo, temp_hi, prcp, date, location
@@ -192,4 +179,12 @@ WHERE city = name;
 
 -- Display the view
 SELECT * FROM myview;
+
+-- Add constraints to city and weather tables (You can also use updated definitions above)
+ALTER TABLE cities ADD PRIMARY KEY(name);
+ALTER TABLE weather ADD FOREIGN KEY(city) REFERENCES cities(name);
+ALTER TABLE cities RENAME COLUMN name TO city;
+
+-- Try to insert an invalid record
+INSERT INTO weather VALUES ('Berkeley', 45, 53, 0.0, '1994-11-28');
 
