@@ -188,3 +188,61 @@ ALTER TABLE cities RENAME COLUMN name TO city;
 -- Try to insert an invalid record
 INSERT INTO weather VALUES ('Berkeley', 45, 53, 0.0, '1994-11-28');
 
+-- Create BRANCHES and ACCOUNTS tables to illustrate transactions usage
+CREATE TABLE branches (
+  name    varchar(80) primary key,
+  balance real
+);
+CREATE TABLE accounts (
+  name        varchar(80),
+  branch_name varchar(80) references branches(name),
+  balance     real
+);
+
+-- Insert records into BRANCHES table
+INSERT INTO branches (name, balance)
+VALUES ('alice_branch', 300.00);
+INSERT INTO branches (name, balance)
+VALUES ('bob_branch', 300.00);
+
+-- Insert records into ACCOUNTS table
+INSERT INTO accounts (name, branch_name, balance)
+VALUES ('Alice', 'alice_branch', 300.00);
+INSERT INTO accounts (name, branch_name, balance)
+VALUES ('Bob', 'bob_branch', 300.00);
+
+-- Check ACCOUNTS and BRANCHES tables content
+SELECT * FROM accounts;
+SELECT * FROM branches;
+
+-- Begin transaction from Alice's account to Bob's account
+BEGIN;
+UPDATE accounts SET balance = balance - 100.00
+WHERE name = 'Alice';
+
+-- Check that in the middle of the transaction Alice's account has been debited while Bob's account still have to be credited
+SELECT * FROM accounts;
+
+-- Abort the transaction using ROLLBACK command
+ROLLBACK;
+
+-- Check that we are in the state prior to the "failed" transaction
+SELECT * FROM accounts;
+SELECT * FROM branches;
+
+-- Proceed the whole transaction
+BEGIN;
+UPDATE accounts SET balance = balance - 100.00
+WHERE name = 'Alice';
+UPDATE branches SET balance = balance - 100.00
+WHERE name = (SELECT branch_name FROM accounts WHERE name = 'Alice');
+UPDATE accounts SET balance = balance + 100.00
+WHERE name = 'Bob';
+UPDATE branches SET balance = balance + 100.00
+WHERE name = (SELECT branch_name FROM accounts WHERE name = 'Bob');
+COMMIT;
+
+-- Check that the transaction completed successfully
+SELECT * FROM accounts;
+SELECT * FROM branches;
+
