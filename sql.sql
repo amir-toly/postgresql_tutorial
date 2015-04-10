@@ -204,12 +204,16 @@ INSERT INTO branches (name, balance)
 VALUES ('alice_branch', 300.00);
 INSERT INTO branches (name, balance)
 VALUES ('bob_branch', 300.00);
+INSERT INTO branches (name, balance)
+VALUES ('wally_branch', 300.00);
 
 -- Insert records into ACCOUNTS table
 INSERT INTO accounts (name, branch_name, balance)
 VALUES ('Alice', 'alice_branch', 300.00);
 INSERT INTO accounts (name, branch_name, balance)
 VALUES ('Bob', 'bob_branch', 300.00);
+INSERT INTO accounts (name, branch_name, balance)
+VALUES ('Wally', 'wally_branch', 300.00);
 
 -- Check ACCOUNTS and BRANCHES tables content
 SELECT * FROM accounts;
@@ -245,4 +249,29 @@ COMMIT;
 -- Check that the transaction completed successfully
 SELECT * FROM accounts;
 SELECT * FROM branches;
+
+-- Check ACCOUNTS table content
+SELECT * FROM accounts;
+
+-- Begin transaction from Alice's account to Bob's account
+BEGIN;
+UPDATE accounts SET balance = balance - 100.00 WHERE name = 'Alice';
+SAVEPOINT my_savepoint;
+UPDATE accounts SET balance = balance + 100.00 WHERE name = 'Bob';
+
+-- Check ACCOUNTS table content
+SELECT * FROM accounts;
+
+-- Cancel transfer to Bob's account
+ROLLBACK TO my_savepoint;
+
+-- Check that Alice's account is still being debited while Bob's account is no longer credited
+SELECT * FROM accounts;
+
+-- Send the money to Wally instead
+UPDATE accounts SET balance = balance + 100.00 WHERE name = 'Wally';
+COMMIT;
+
+-- Check the transaction results
+SELECT * FROM accounts;
 
