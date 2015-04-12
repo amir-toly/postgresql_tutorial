@@ -275,3 +275,54 @@ COMMIT;
 -- Check the transaction results
 SELECT * FROM accounts;
 
+-- Create EMPSALARY table to follow Window Functions section
+CREATE TABLE empsalary (
+  depname     varchar(80),
+  empno       int,
+  salary      int,
+  enroll_date date
+);
+
+-- Insert records into EMPSALARY table
+INSERT INTO empsalary (depname, empno, salary, enroll_date) VALUES
+('develop', 11, 5200, 'now'),
+('develop', 7, 4200, 'now'),
+('develop', 9, 4500, 'now'),
+('develop', 8, 6000, 'now'),
+('develop', 10, 5200, 'now'),
+('personnel', 5, 3500, 'now'),
+('personnel', 2, 3900, 'now'),
+('sales', 3, 4800, 'now'),
+('sales', 1, 5000, 'now'),
+('sales', 4, 4800, 'now');
+
+-- Compare each employee's salary with the average salary in his or her department
+SELECT depname, empno, salary, avg(salary) OVER (PARTITION BY depname) FROM empsalary;
+
+-- Rank employees by salary in their department, in descending order
+SELECT depname, empno, salary, rank() OVER (
+  PARTITION BY depname ORDER BY salary DESC
+)
+FROM empsalary;
+
+-- Use OVER clause with no window frame (ORDER BY clause omitted) and for all rows (PARTITION BY clause not used) from EMPSALARY table
+SELECT salary, sum(salary) OVER () FROM empsalary;
+
+-- Define the window frame using SALARY column
+SELECT salary, sum(salary) OVER (ORDER BY salary) FROM empsalary;
+
+-- Use a subquery to apply a WHERE clause on window functions results
+SELECT depname, empno, salary, enroll_date
+FROM (
+  SELECT depname, empno, salary, enroll_date, rank() OVER (
+    PARTITION BY depname ORDER BY salary DESC, empno
+  ) AS pos
+  FROM empsalary
+) AS ss
+WHERE pos < 3;
+
+-- Name window functions to avoid duplication
+SELECT sum(salary) OVER w, avg(salary) OVER w
+FROM empsalary
+WINDOW w AS (PARTITION BY depname ORDER BY salary DESC);
+
