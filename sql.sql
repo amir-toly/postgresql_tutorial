@@ -326,3 +326,35 @@ SELECT sum(salary) OVER w, avg(salary) OVER w
 FROM empsalary
 WINDOW w AS (PARTITION BY depname ORDER BY salary DESC);
 
+-- Create CITIES table
+CREATE TABLE cities (
+  name        text,
+  population  real,
+  altitude    int   -- (in ft)
+);
+
+-- Create CAPITALS table which extends CITIES table
+CREATE TABLE capitals (
+  state char(2)
+) INHERITS (cities);
+
+-- Insert records into CITIES table
+INSERT INTO cities (name, population, altitude) VALUES
+-- Population from New Oxford American Dictionary's estimations (2008)
+('Las Vegas', 558383, 2174),
+('Mariposa', NULL, 1953);
+
+-- Insert records into CAPITALS table
+INSERT INTO capitals (name, population, altitude, state)
+VALUES ('Madison', 231916, 845, 'WI');
+
+-- Return cities located at an altitude over 500 feet
+SELECT name, altitude
+FROM cities
+WHERE altitude > 500;
+
+-- Return cities (excluding capitals) located at an altitude over 500 feet
+SELECT name, altitude
+FROM ONLY cities
+WHERE altitude > 500;
+
