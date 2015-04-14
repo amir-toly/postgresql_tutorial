@@ -7,6 +7,12 @@ SELECT current_date;
 -- Add 2 and 2
 SELECT 2 + 2;
 
+-- Create CITIES table
+CREATE TABLE cities (
+  city      varchar(80) primary key,
+  location  point
+);
+
 -- Create WEATHER table
 CREATE TABLE weather (
   city    varchar(80) references cities(city),
@@ -14,12 +20,6 @@ CREATE TABLE weather (
   temp_hi int,                                  -- high temperature
   prcp    real,                                 -- precipitation
   date    date
-);
-
--- Create CITIES table
-CREATE TABLE cities (
-  city      varchar(80) primary key,
-  location  point
 );
 
 -- List tables (among other things) with \d
